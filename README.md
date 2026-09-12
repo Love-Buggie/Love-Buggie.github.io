@@ -9,12 +9,13 @@ Edit a file, commit, push — the live site updates in about a minute.
 ## Files
 
 ```
-index.html      the whole page: hero, projects, about, skills, résumé, contact
-css/style.css   all styling; colors and fonts are CSS variables at the top
-js/main.js      the project overlay + "expand all" on the résumé
-favicon.svg     browser tab icon
-assets/         images you add (projects/ is for screenshots)
-.nojekyll       tells GitHub Pages to serve the files as-is
+index.html             the whole page: hero, projects, about, skills, résumé, contact
+benched-projects.html  parked project cards — not loaded by anything, just a shelf
+css/style.css          all styling; colors and fonts are CSS variables at the top
+js/main.js             the project overlay + "expand all" on the résumé
+favicon.svg            browser tab icon
+assets/                images you add (projects/ is for screenshots)
+.nojekyll              tells GitHub Pages to serve the files as-is
 ```
 
 ## Adding a project
@@ -33,6 +34,33 @@ the full description, the complete tag list, and these attributes:
 
 Card order on the page is the order in the file. Accent colors and the slight
 tilt cycle automatically by position — nothing to set per card.
+
+## The featured card
+
+One card carries `class="card card--featured"` and is twice as wide, with a
+silent looping clip over its poster image:
+
+```html
+<video class="card__loop" autoplay muted loop playsinline poster="...">
+  <source src="assets/projects/singapore-loop.mp4" type="video/mp4">
+</video>
+```
+
+The clip only fades in once it is genuinely playing, so if the file is missing,
+slow, or the visitor has asked for reduced motion, the poster image just stays.
+Nothing breaks if you never add a video.
+
+For the clip: 5–10 seconds, silent, around 1280x720, H.264 MP4, under ~3MB.
+
+To feature a different project, move the `card--featured` class and the
+`<video>` block onto that project's card.
+
+## Parking a project
+
+`benched-projects.html` is a shelf, not a page — nothing loads it. Move an
+`<article>` block between it and the grid in `index.html` to take a project off
+the site or put it back. The grid shows cards in the order they appear, and the
+accent colour and tilt follow position automatically.
 
 ## Adding your photo
 

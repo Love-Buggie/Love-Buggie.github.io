@@ -677,3 +677,39 @@ img { max-width: 100%; }
   padding: 0; margin: -1px; overflow: hidden;
   clip: rect(0 0 0 0); white-space: nowrap; border: 0;
 }
+
+/* --------------------------------------------------------------------------
+   Featured card
+   One project gets double width and a silent looping clip. Move the
+   .card--featured class in index.html to feature a different project.
+   -------------------------------------------------------------------------- */
+
+/* Cards size to their own content rather than stretching to the tallest in
+   the row — otherwise the featured card leaves its neighbours half empty. */
+.grid { align-items: start; }
+
+.card--featured { grid-column: span 2; }
+
+/* Below two columns the grid is single-file, so spanning 2 would overflow. */
+@media (max-width: 620px) {
+  .card--featured { grid-column: auto; }
+}
+
+.card--featured .card__media { aspect-ratio: 16 / 9; }
+.card--featured .card__title { font-size: 26px; }
+.card--featured .card__teaser { font-size: 15.5px; }
+.card--featured .card__body { padding: 20px 22px 22px; }
+.card--featured .card__play { width: 52px; height: 52px; font-size: 17px; bottom: 14px; right: 14px; }
+
+/* The clip sits over the poster and fades in only once it is really playing,
+   so a missing or slow file simply leaves the poster showing. */
+.card__loop {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%; object-fit: cover; display: block;
+  opacity: 0; transition: opacity .4s ease;
+}
+.card__loop.is-playing { opacity: 1; }
+
+@media (prefers-reduced-motion: reduce) {
+  .card__loop { display: none; }
+}

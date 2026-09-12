@@ -254,6 +254,39 @@
     syncLabel();
   }
 
+  /* ------------------------------------------------------------ featured loop */
+  /* The looping clip reveals itself only once it is actually playing, and never
+     if the visitor asked for reduced motion. A missing file leaves the poster. */
+
+  var reduceMotion = window.matchMedia &&
+                     window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  Array.prototype.forEach.call(document.querySelectorAll('.card__loop'), function (video) {
+    if (reduceMotion) { video.removeAttribute('autoplay'); video.pause(); return; }
+
+    video.addEventListener('playing', function () { video.classList.add('is-playing'); });
+    video.addEventListener('error', function () { video.classList.remove('is-playing'); }, true);
+
+    // Some browsers hold autoplay until the tab is interacted with; asking
+    // explicitly covers that, and a refusal just leaves the poster up.
+    var attempt = video.play();
+    if (attempt && attempt.catch) attempt.catch(function () { /* poster stays */ });
+
+    // Don't burn battery on a card nobody is looking at.
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            var pl = video.play();
+            if (pl && pl.catch) pl.catch(function () {});
+          } else {
+            video.pause();
+          }
+        });
+      }, { threshold: 0.1 }).observe(video);
+    }
+  });
+
   /* --------------------------------------------------------- image fallback */
   /* If a thumbnail 404s (a video went private, a filename is wrong), show the
      striped placeholder instead of a broken-image icon. */
